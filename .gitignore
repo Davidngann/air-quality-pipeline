@@ -9,5 +9,12 @@ terraform/.terraform/
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 
+# Logs
+*.log
+logs/*.log
+logs/
+
+temp/
 scratch
 Phase2_Learning_Guide.md
+run.py

@@ -12,7 +12,7 @@ A data pipeline ingesting air quality measurements from OpenAQ into AWS (S3 → 
 - **CI/CD:** GitHub Actions
 
 ## Status
-Phase 2 — Week 01 (AWS Fundamentals)
+Phase 2 — Week 02 (Writing Bulk loader and utils)
 
 ## Architecture Decisions
 See `docs/decisions/` for ADRs.
