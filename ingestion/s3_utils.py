@@ -6,9 +6,8 @@ from ingestion.exceptions import UtilsError
 load_dotenv(override=True)
 logger = logger = get_logger(__name__)
 
-s3_client = boto3.client("s3")
-
-
+def _get_client():
+    return boto3.client("s3")
 
 def upload_file(local_file_path: str, bucket: str, s3_key: str) -> None:
     """
@@ -20,11 +19,12 @@ def upload_file(local_file_path: str, bucket: str, s3_key: str) -> None:
         raise UtilsError(msg)
     try:
         logger.info(f"Uploading started: {local_file_path} -> s3://{bucket}/{s3_key}")
-        s3_client.upload_file(local_file_path, bucket, s3_key)
+        _get_client().upload_file(local_file_path, bucket, s3_key)
         logger.info("upload success")
     except Exception as e:
-        logger.error(f"Failed to upload file to S3: {e}", exc_info=True)
-        raise UtilsError(f"Error has occurred during S3 upload: {e}")
+        msg = f"Failed to upload file to S3: {e}"
+        logger.error(msg, exc_info=True)
+        raise UtilsError(msg)
 
 def list_objects(bucket:str, prefix: str) -> list[str]:
     """
@@ -33,7 +33,7 @@ def list_objects(bucket:str, prefix: str) -> list[str]:
     try:
         logger.info(f"Object list from bucket: {bucket} with prefix: {prefix}")
         keys = []
-        paginator = s3_client.get_paginator("list_objects_v2")
+        paginator = _get_client().get_paginator("list_objects_v2")
         for page in paginator.paginate(Bucket=bucket, Prefix=prefix):
             for obj in page.get("Contents", []):
                 keys.append(obj["Key"])
@@ -51,7 +51,7 @@ def download_file(bucket: str, s3_key: str, local_path: str) -> None:
     """
     try:
         logger.info(f"download started from s3://{bucket}/{s3_key} -> local: {local_path} ")
-        s3_client.download_file(bucket, s3_key, local_path)
+        _get_client().download_file(bucket, s3_key, local_path)
         logger.info("download success")
     except Exception as e:
         msg = f"Failed to download file from s3://{bucket}/{s3_key} with error: {e}"

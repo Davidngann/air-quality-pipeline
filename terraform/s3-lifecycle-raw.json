@@ -1,0 +1,18 @@
+{
+    "Rules": [
+        {
+            "ID": "raw-historical-to-ia",
+            "Status": "Enabled",
+            "Filter": {
+                "Prefix": "raw/historical"
+            },
+            "Transitions": [
+                {
+                    "Days": 90,
+                    "StorageClass": "STANDARD_IA"
+                }
+            ]
+
+        }
+    ]
+}
