@@ -176,8 +176,9 @@ def run_bulk_load(year: int, month: int) -> None:
 
         datetime_from = f"{year}-{month:02d}-01T00:00:00Z"
         last_day = calendar.monthrange(year, month)[1]
-        # datetime_to = f"{year}-{month:02d}-{last_day}T23:59:59Z"
-        datetime_to = f"{year}-{month:02d}-02T23:59:59Z"
+        datetime_to = f"{year}-{month:02d}-{last_day}T23:59:59Z"
+        # For testing
+        # datetime_to = f"{year}-{month:02d}-02T23:59:59Z"
 
 
         for sensor in location["sensors"]:
@@ -202,10 +203,10 @@ def run_bulk_load(year: int, month: int) -> None:
             with tempfile.NamedTemporaryFile(mode='w',suffix='.json',delete=False) as f:
                 json.dump(payload, f)
                 temp_path = f.name
-                s3_key = build_s3_key(location_id=location["id"], year=year, month=month)
-                upload_file(temp_path, raw_bucket, s3_key=s3_key)
-                logger.info(f"Uploaded {location['name']} -> {s3_key}")
-                processed += 1
+            s3_key = build_s3_key(location_id=location["id"], year=year, month=month)
+            upload_file(temp_path, raw_bucket, s3_key=s3_key)
+            logger.info(f"Uploaded {location['name']} -> {s3_key}")
+            processed += 1
         finally:
             if temp_path and os.path.exists(temp_path):
                 os.remove(temp_path)

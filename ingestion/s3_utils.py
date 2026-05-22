@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from ingestion.exceptions import UtilsError
 
 load_dotenv(override=True)
-logger = logger = get_logger(__name__)
+logger = get_logger(__name__)
 
 def _get_client():
     return boto3.client("s3")
