@@ -1,7 +1,7 @@
 from ingestion.s3_utils import upload_file, download_file, list_objects
 import boto3
 from tests.conftest import MOCK_REGION, MOCK_BUCKET
-from ingestion.exceptions import UtilsError
+from ingestion.exceptions import S3UtilsError, RedshiftUtilsError
 import pytest
 
 def test_upload_file_success(s3_bucket, tmp_path):
@@ -18,10 +18,10 @@ def test_upload_file_success(s3_bucket, tmp_path):
     assert response["Contents"][0]["Key"] == s3_key
 
 def test_upload_file_missing_key_raises(s3_bucket, tmp_path):
-    """upload_file with empty s3_key raises UtilsError."""
+    """upload_file with empty s3_key raises S3UtilsError."""
     local_file = tmp_path / "test.json"
     local_file.write_text('{"value": 1}')
-    with pytest.raises(UtilsError, match="s3 key is needed"):
+    with pytest.raises(S3UtilsError, match="s3 key is needed"):
         upload_file(str(local_file), s3_bucket, '')
 
 

@@ -144,7 +144,7 @@ def run_bulk_load(year: int, month: int) -> None:
     for a given year and month. One JSON file per location uploaded to S3.
     """
 
-    all_locations = fetch_melbourne_locations(-37.803, 144.981, 5000)
+    all_locations = fetch_melbourne_locations(-37.803, 144.981, 10000)
     processed = 0
     skipped = 0
 
@@ -180,7 +180,7 @@ def run_bulk_load(year: int, month: int) -> None:
         # For testing
         # datetime_to = f"{year}-{month:02d}-02T23:59:59Z"
 
-
+        logger.info(f"Processing sensor from location: {location['id']} - {location['name']}")
         for sensor in location["sensors"]:
             measurements = fetch_sensor_measurements(
                 sensor["id"],

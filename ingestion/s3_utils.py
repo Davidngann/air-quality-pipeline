@@ -1,7 +1,7 @@
 from ingestion.logger import get_logger
 import boto3
 from dotenv import load_dotenv
-from ingestion.exceptions import UtilsError
+from ingestion.exceptions import S3UtilsError
 
 load_dotenv(override=True)
 logger = get_logger(__name__)
@@ -16,7 +16,7 @@ def upload_file(local_file_path: str, bucket: str, s3_key: str) -> None:
     if not s3_key:
         msg = f"s3 key is needed"
         logger.error(msg)
-        raise UtilsError(msg)
+        raise S3UtilsError(msg)
     try:
         logger.info(f"Uploading started: {local_file_path} -> s3://{bucket}/{s3_key}")
         _get_client().upload_file(local_file_path, bucket, s3_key)
@@ -24,7 +24,7 @@ def upload_file(local_file_path: str, bucket: str, s3_key: str) -> None:
     except Exception as e:
         msg = f"Failed to upload file to S3: {e}"
         logger.error(msg, exc_info=True)
-        raise UtilsError(msg)
+        raise S3UtilsError(msg)
 
 def list_objects(bucket:str, prefix: str) -> list[str]:
     """
@@ -41,7 +41,7 @@ def list_objects(bucket:str, prefix: str) -> list[str]:
     except Exception as e:
         msg = f"Failed to list object from bucket: {bucket} with prefix: {prefix} with error: {e}"
         logger.error(msg, exc_info=True)
-        raise UtilsError(msg)
+        raise S3UtilsError(msg)
 
 
 
@@ -56,4 +56,4 @@ def download_file(bucket: str, s3_key: str, local_path: str) -> None:
     except Exception as e:
         msg = f"Failed to download file from s3://{bucket}/{s3_key} with error: {e}"
         logger.error(msg, exc_info=True)
-        raise UtilsError(msg)
+        raise S3UtilsError(msg)

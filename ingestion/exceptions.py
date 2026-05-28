@@ -4,8 +4,14 @@ class BulkLoaderError(Exception):
     """
     pass
 
-class UtilsError(Exception):
+class S3UtilsError(Exception):
     """
-    Raised when the util function is called but error raised.
+    Raised when the S3 utils function is called but error raised.
     """
     pass
+
+
+class RedshiftUtilsError(Exception):
+    """"
+    Raised when the Redshift utils function is called but error raised.
+    """

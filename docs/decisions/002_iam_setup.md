@@ -2,6 +2,8 @@
 
 **Date:** 2026-05-15  
 **Status:** Accepted
+**Updated:** 2026-05-25
+
 
 ## Context
 
@@ -14,17 +16,22 @@ AWS requires an identity and access management strategy before any services are 
 - IAM user `david-de`: AdministratorAccess for personal development work. 
   AWS CLI configured with named profile `david-de`.
 
-### Service Role: `aq-glue-role`
-Created a dedicated IAM role for AWS Glue with least-privilege S3 access:
-| Permission | Bucket | Reason |
-|---|---|---|
-| `s3:GetObject`, `s3:ListBucket` | `aq-raw-david-*` | Glue reads raw data |
-| `s3:PutObject`, `s3:DeleteObject` | `aq-staged-david-*` | Glue writes staged output |
+### Service Role
+| Role | Trust Principal | Policy | Permissions |
+|---|---|---|---|
+| `aq-glue-role` | `glue.amazonaws.com` | `aq-glue-s3-policy` | Read raw bucket, write staged bucket |
+| `aq-redshift-role` | `redshift.amazonaws.com` | `aq-redshift-s3-policy` | Read raw bucket only |
+
 
 Glue is explicitly denied write access to the raw bucket — raw data 
 is an immutable archive.
 
-Trust policy allows only `glue.amazonaws.com` to assume this role.
+Redshift only requires read access to raw bucket for COPY operations. It never writes back to S3.
+Each service has its own trust policy and permissions policy. No shared roles across services.
+
+
+### Admin Credentials
+Redshift Serverless admin password stored in `.env` (gitignored). In production, Secrets Manager with automatic rotation would replace this pattern.
 
 
 ## Consequences
